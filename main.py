@@ -34,9 +34,18 @@ def iterate_over_directory(dir):
 # this is called on a per-json-file basis
 def convert_annos_to_yolo(path):
     with open(path, 'r') as convertee_file:
-        data = json.load(convertee_file)
-        # print(data)
-     
+        data = json.load(convertee_file) # file data all loaded in
+
+        # loop over data on per-frame basis and see if there is an annos
+    if "annos" not in data:
+        print("- - - - > Skipping ", path, " - - - > no annos field")
+        return
+    else:
+        boxes_2d = data["annos"]["boxes_2d"]
+        print(boxes_2d)
+
+    # # find and load in info from boxes_2d
+
     return
 
 def manage_output_directory(path):
@@ -98,25 +107,11 @@ def main():
 
     # we need to convert 2d box info to yolo format
     
-    
     # need to replace the 2d bounding box info for ONCE with the list from convert_2d_box_to_yolo()
-
-    # checking if files already exist within output/
-        
-    # for each sequence id in /train_infos/
-        # parse its json
-            # for each 
-
-    once_train = "temp"
-    once_val = "temp"
 
 
     # managing output directories
     manage_output_directory(once_train_dir)
-    
-    # create new file in output
-    #yolo_train = create_yolo_annos(once_train)
-    #yolo_val = create_yolo_annos(once_val)
 
 
 if __name__ == "__main__":
