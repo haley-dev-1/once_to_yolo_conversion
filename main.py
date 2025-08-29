@@ -13,21 +13,13 @@ YOLO_CLASSES = {
 # used to grab .json in each camera
 def iterate_over_directory(dir):
     json_files_in_path = []
-    # get each sequence directory (e.g. 000076) 
-    #print("list directories within dir:", os.listdir(dir), "that need access")
     for subdir in os.listdir(dir):
         full_path = os.path.join(dir, subdir) # creates access to the sequences' json
-        #print(full_path) # works, prints full path
         for file in os.listdir(full_path):
             full_file_path = os.path.join(full_path, file)
             if file.endswith(".json"):
-                #print(file, "accessed!")
                 json_files_in_path.append(file)
-                
-                ''' '''
                 convert_annos_to_yolo(full_file_path) # go into file 
-                ''' '''
-
     print("jsons accessed in ",dir, " and ready for altering: ", json_files_in_path,"\n")
     return json_files_in_path 
 
@@ -36,13 +28,30 @@ def convert_annos_to_yolo(path):
     with open(path, 'r') as convertee_file:
         data = json.load(convertee_file) # file data all loaded in
 
-        # loop over data on per-frame basis and see if there is an annos
-    if "annos" not in data:
-        print("- - - - > Skipping ", path, " - - - > no annos field")
-        return
-    else:
-        boxes_2d = data["annos"]["boxes_2d"]
-        print(boxes_2d)
+
+
+    # # boxes_2d = data.get("meta_info")
+    # boxes_2d = data["annos"]["boxes_2d"]
+    # cam01_boxes = data["annos"]["boxes_2d"]["cam01"]
+    # print(boxes_2d)
+    # print(cam01_boxes)
+
+    # boxes_2d = data["annos"].get("boxes_2d", {})
+    # print(boxes_2d)
+
+    # loop over data on per-frame basis and see if there is an annos
+    # if "annos" not in data: # annos should always be within the file bro omg
+    #     print("- - - - > Skipping ", path, " - - - > no annos field")
+    #     return
+    # else:
+    #     # boxes_2d = data["annos"]["boxes_2d"]
+    #     boxes_2d = data.get("annos")["boxes_2d"]
+    #     # boxes_2d = frame["annos"].get("boxes_2d", {})
+    #     print(path, "has", boxes_2d)
+
+    #
+
+    #convert_2d_box_to_yolo
 
     # # find and load in info from boxes_2d
 
