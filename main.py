@@ -27,34 +27,15 @@ def iterate_over_directory(dir):
 def convert_annos_to_yolo(path):
     with open(path, 'r') as convertee_file:
         data = json.load(convertee_file) # file data all loaded in
+        # print(data)
 
+        frames = data.get("frames")
+        annos = frames[0].get("annos")
+        names = annos.get("names")
 
-
-    # # boxes_2d = data.get("meta_info")
-    # boxes_2d = data["annos"]["boxes_2d"]
-    # cam01_boxes = data["annos"]["boxes_2d"]["cam01"]
-    # print(boxes_2d)
-    # print(cam01_boxes)
-
-    # boxes_2d = data["annos"].get("boxes_2d", {})
-    # print(boxes_2d)
-
-    # loop over data on per-frame basis and see if there is an annos
-    # if "annos" not in data: # annos should always be within the file bro omg
-    #     print("- - - - > Skipping ", path, " - - - > no annos field")
-    #     return
-    # else:
-    #     # boxes_2d = data["annos"]["boxes_2d"]
-    #     boxes_2d = data.get("annos")["boxes_2d"]
-    #     # boxes_2d = frame["annos"].get("boxes_2d", {})
-    #     print(path, "has", boxes_2d)
-
-    #
-
-    #convert_2d_box_to_yolo
-
-    # # find and load in info from boxes_2d
-
+        boxes_2d = []
+        print(path, " annotiatons: ", names, "\n")
+        
     return
 
 def manage_output_directory(path):
