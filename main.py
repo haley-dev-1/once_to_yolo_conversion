@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 
 # define our class annotations to take ONCE -> YOLO format
 YOLO_CLASSES = {
@@ -17,9 +18,14 @@ def iterate_over_directory(dir):
         full_path = os.path.join(dir, subdir) # creates access to the sequences' json
         for file in os.listdir(full_path):
             full_file_path = os.path.join(full_path, file)
+            # if there is a valid file
             if file.endswith(".json"):
                 json_files_in_path.append(file)
-                convert_annos_to_yolo(full_file_path) # go into file 
+
+                # print(convert_annos_to_yolo(full_file_path)) # go into file, returns names
+                convert_annos_to_yolo(full_file_path) # go into file, returns names (for now!)
+
+
     print("jsons accessed in ",dir, " and ready for altering: ", json_files_in_path,"\n")
     return json_files_in_path 
 
@@ -33,23 +39,28 @@ def convert_annos_to_yolo(path):
         annos = frames[0].get("annos")
         names = annos.get("names")
 
-        boxes_2d = []
-        print(path, " annotiatons: ", names, "\n")
-        
-    return
+        # names has a list of names, i eant to dynamically grab that
+        YOLO_ANNOTATION = []
+        for name in names:
+            YOLO_ANNOTATION.append(YOLO_CLASSES[name]) # returns number per
+        # print(YOLO_ANNOTATION)
+        # replace
+
+    return names
 
 def manage_output_directory(path):
     # print(os.getcwd())
+    out_dir = os.path.join(path, "output")
     if(os.path.isdir("output")):
-        # print("we have that directory") # works
-        # clear contents of output
-        return
+        shutil.rmtree(out_dir)
+        print("We already had that directory \n ... Deleted so we can replace file contents") # works
+        manage_output_directory(path)
     else:
-        # print("no!!!!!!")
-        # we need to:
-            # add output to path
-            # copy original paths with the correct jsons per 
-        return
+        print("Creating directory")
+        os.makedirs(out_dir)
+
+    # Next, we load the directories with the frame_id/YOLO txt for each object
+
         
 
 # get each camera's 2dbox information
@@ -85,7 +96,18 @@ def main():
     once_train_jsons = iterate_over_directory(once_train_dir) # return list of json files
     once_val_jsons = iterate_over_directory(once_val_dir) # return list of json
 
-    '''for each json, we use our map and replace each instance of '''
+    #print(once_train_jsons)
+    for file in once_train_jsons:
+        # print(file)
+        
+        # 1. Grab number of frame Ids
+        
+        #  
+        # 2. For each frame Id within frames, we need to convert the annos, then create this file with yolo annos instead     
+
+        ''' for each json, we use our map and replace each instance of '''
+
+
     # convert_annos_to_yolo_format(once_train_jsons) # go into each json
     
 
@@ -101,7 +123,7 @@ def main():
 
 
     # managing output directories
-    manage_output_directory(once_train_dir)
+    manage_output_directory(os.getcwd())
 
 
 if __name__ == "__main__":
