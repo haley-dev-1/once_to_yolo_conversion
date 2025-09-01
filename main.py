@@ -2,6 +2,7 @@ import json
 import os
 import shutil
 import time
+import re
 
 # define our class annotations to take ONCE -> YOLO format
 YOLO_CLASSES = {
@@ -51,7 +52,13 @@ def convert_annos_to_yolo(full_path, file, output_file, new_path):
         annos = frames[0].get("annos")
         names = annos.get("names")
         boxes_2d = annos.get("boxes_2d") # // x_min, y_min, x_max, y_max
-        # camera = boxes_2d[0]
+        
+        # # camera = boxes_2d.get("^cam")
+        # txt = "cam"
+        # camera = re.findall(boxes_2d.get("^cam", txt))
+        # print(camera)
+
+        # print("2d boxes information: ", camera, "\n")
 
         test_x = 0
         test_y = 0
@@ -59,9 +66,6 @@ def convert_annos_to_yolo(full_path, file, output_file, new_path):
         h = 0
         center_y = test_y
         center_x = test_x
-
-        
-
 
         # names has a list of names, i eant to dynamically grab that
         YOLO_ANNOTATION = []
