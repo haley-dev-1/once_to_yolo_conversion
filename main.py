@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+import time
 
 # define our class annotations to take ONCE -> YOLO format
 YOLO_CLASSES = {
@@ -12,25 +13,36 @@ YOLO_CLASSES = {
 }
 
 # used to grab .json in each camera
-def iterate_over_directory(dir):
+def iterate_over_directory(type, dir, cwd):
     json_files_in_path = []
     for subdir in os.listdir(dir):
-        full_path = os.path.join(dir, subdir) # creates access to the sequences' json
+
+        # creates output directories ( /000076_output/ ) for each json
+        full_path = os.path.join(dir, subdir) # train_infos/data are being iterated over # creates access to the sequences' json
+        dynamic_string_reassign = type + "/" + subdir
+        new_path = "output/"+dynamic_string_reassign
+        os.makedirs(new_path)
+
+        file_name_dynamic = os.path.join(new_path, "output.txt")
+        with open(file_name_dynamic, 'w') as f:
+            f.write("yo it workd thats crazy")
+        
+        # within each in new_path i need to create a file     
+
         for file in os.listdir(full_path):
             full_file_path = os.path.join(full_path, file)
             # if there is a valid file
             if file.endswith(".json"):
                 json_files_in_path.append(file)
-
                 # print(convert_annos_to_yolo(full_file_path)) # go into file, returns names
-                convert_annos_to_yolo(full_file_path) # go into file, returns names (for now!)
-
+                convert_annos_to_yolo(full_path, file) # go into file, returns names (for now!)
 
     print("jsons accessed in ",dir, " and ready for altering: ", json_files_in_path,"\n")
     return json_files_in_path 
 
 # this is called on a per-json-file basis
-def convert_annos_to_yolo(path):
+def convert_annos_to_yolo(full_path, file):
+    path = os.path.join(full_path, file)
     with open(path, 'r') as convertee_file:
         data = json.load(convertee_file) # file data all loaded in
         # print(data)
@@ -43,6 +55,7 @@ def convert_annos_to_yolo(path):
         YOLO_ANNOTATION = []
         for name in names:
             YOLO_ANNOTATION.append(YOLO_CLASSES[name]) # returns number per
+
         # print(YOLO_ANNOTATION)
         # replace
 
@@ -89,12 +102,15 @@ def main():
 
     print("\nCurrent:", os.getcwd(), "\n")
 
+    manage_output_directory(os.getcwd())
+
+
     # read in json files
     once_train_dir = "data/train/train_infos/data/" # This needs to be iterated over
     once_val_dir = "data/val/val_infos/data/"
     
-    once_train_jsons = iterate_over_directory(once_train_dir) # return list of json files
-    once_val_jsons = iterate_over_directory(once_val_dir) # return list of json
+    once_train_jsons = iterate_over_directory("train", once_train_dir, os.getcwd()) # return list of json files
+    once_val_jsons = iterate_over_directory("val", once_val_dir, os.getcwd()) # return list of json
 
     #print(once_train_jsons)
     for file in once_train_jsons:
@@ -123,7 +139,6 @@ def main():
 
 
     # managing output directories
-    manage_output_directory(os.getcwd())
 
 
 if __name__ == "__main__":
