@@ -53,33 +53,66 @@ def convert_annos_to_yolo(full_path, file, output_file, new_path):
         names = annos.get("names")
         boxes_2d = annos.get("boxes_2d") # // x_min, y_min, x_max, y_max
         
+        # frame_ids = []
+        # for i in frames:
+        #     frame_id = frames.get("frame_id") # get frames
+        #     frame_ids.append(frame_id)
+        # print(frame_ids)
         # # camera = boxes_2d.get("^cam")
         # txt = "cam"
         # camera = re.findall(boxes_2d.get("^cam", txt))
         # print(camera)
 
-        # print("2d boxes information: ", camera, "\n")
 
+        '''printing out frames on per-frame-id basis'''
+        frames_list = []
+        YOLO_ANNOTATION = []
+
+        
         test_x = 0
         test_y = 0
         w = 0
         h = 0
         center_y = test_y
         center_x = test_x
-
-        # names has a list of names, i eant to dynamically grab that
-        YOLO_ANNOTATION = []
-        for name in names:
-            YOLO_ANNOTATION.append(YOLO_CLASSES[name]) # returns number per
-            myobj = create_yolo_annos(YOLO_CLASSES[name], center_x, center_y, w, h)
+        
+        # TODO: Name handling
+        for frame in frames:
+            independent_frames = frame.get("frame_id")
+            name = frame.get("name")
+            YOLO_ANNOTATION.append("test") # returns number per
+            myobj = create_yolo_annos(independent_frames, name,center_x, center_y, w, h)
             with open(output_file, 'a') as f:
+                f.write("Yolo <frame, center, center, w, h:")
+                f.write("\n")
                 f.write(str(myobj))
                 f.write("\n")
+                f.write("\n")
+            frames_list.append(independent_frames)
+            # print("\n\n\n\n\n\n")
+        # print(frames_list)
 
-    return YOLO_ANNOTATION
+        # frame_id = frames[0].get("frame_id") # get frames
+        # print(frame_id) # only prints one...
 
-def create_yolo_annos(id, x, y, w, h):
-    return [id, x, y, w, h]
+        # print("2d boxes information: ", camera, "\n")
+
+
+        # names has a list of names, i eant to dynamically grab that
+        # YOLO_ANNOTATION = []
+        # for name in names:
+        #     YOLO_ANNOTATION.append(YOLO_CLASSES[name]) # returns number per
+        #     myobj = create_yolo_annos(frame_id,YOLO_CLASSES[name], center_x, center_y, w, h)
+        #     with open(output_file, 'a') as f:
+        #         f.write(str(myobj))
+        #         f.write("\n")
+
+        
+
+    return #YOLO_ANNOTATION
+
+def create_yolo_annos(frame, id, x, y, w, h):
+    return [frame, id, x, y, w, h]
 
 def manage_output_directory(path):
     # print(os.getcwd())
